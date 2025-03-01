@@ -19,10 +19,10 @@
   "display": "standalone",
   "dir": "auto",
   "lang": "en-GB",
-  "name": "Quanbas",
-  "short_name": "Quanbas",
+  "name": "QodeNest",
+  "short_name": "QodeNest",
   "start_url": "/",
   "scope": "/",
   "id": "/",
-  "description": "Quanbas is your ultimate browser-based coding platform. Write, compile, and run code seamlessly without installing anything!"
+  "description": "QodeNest is your ultimate browser-based coding platform. Write, compile, and run code seamlessly without installing anything!"
 }

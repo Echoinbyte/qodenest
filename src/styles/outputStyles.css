@@ -1,0 +1,55 @@
+/* For Paragraph (Output Text) */
+.output-text {
+  display: block; /* Makes sure the paragraph is on its own line */
+  margin-block: 8px; /* Space below each paragraph */
+  font-size: 16px; /* Adjust font size */
+  line-height: 1.5; /* Adjust line height for readability */
+}
+
+/* For Error Paragraph (Error Text) */
+.error-text {
+  display: block; /* Makes sure the paragraph is on its own line */
+  margin-block: 8px; /* Space below each paragraph */
+  font-size: 16px; /* Adjust font size */
+  line-height: 1.5; /* Adjust line height for readability */
+  color: red;
+}
+
+/* For Inline Span */
+.output-inline-text {
+  font-size: 16px; /* Adjust font size */
+  padding-right: 16px;
+  line-height: 1.5;
+}
+
+/* For input container to align label and input in a row */
+.input-container {
+  display: flex; /* Align label and input side by side */
+  margin-block: 8px; /* Space above and below the container */
+  align-items: center; /* Align vertically */
+}
+
+.input-label {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-right: 16px; /* Padding between label and input */
+}
+
+.input-field {
+  background-color: transparent;
+  width: auto; /* Input will take width based on content */
+  border-left: 1px solid #888888;
+  outline: none;
+  padding: 2px;
+  font-size: 16px;
+  box-sizing: border-box;
+  flex-grow: 1; /* Make input field take up remaining space */
+}
+
+/* Style for read-only input */
+.input-field.readonly {
+  border: none;
+  caret-color: transparent;
+  font-weight: bold;
+  color: #888888;
+}

@@ -4,12 +4,12 @@ import { useTheme } from "next-themes";
 
 function SwitchTheme() {
   const { setTheme } = useTheme();
-  const [currentTheme, setCurrentTheme] = React.useState<any>();
+  const [currentTheme, setCurrentTheme] = React.useState<any>("dark");
   React.useEffect(() => {
-    localStorage.getItem("theme") === "dark"
-      ? (setTheme("dark"), setCurrentTheme("dark"))
-      : (setTheme("light"), setCurrentTheme("light"));
-  }, []);
+    localStorage.getItem("theme") === "light"
+      ? (setTheme("light"), setCurrentTheme("light"))
+      : (setTheme("dark"), setCurrentTheme("dark"));
+  }, [setTheme]);
 
   const themeSetter = () => {
     if (currentTheme === "dark") {

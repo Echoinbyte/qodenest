@@ -1,27 +1,16 @@
 "use client";
 import { IconButton, Tooltip } from "@mui/material";
-import { File, Fullscreen } from "lucide-react";
+import { Fullscreen } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 import { IoPencil } from "react-icons/io5";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
-import {
-  CODE_SNIPPETS,
-  LANGUAGE_FILE_EXTENSIONS,
-  LANGUAGE_VERSIONS,
-} from "@/constants";
+import { LANGUAGE_DATA, LanguageKey } from "@/constants";
 import { FaSave } from "react-icons/fa";
 import { useToast } from "@/hooks/use-toast";
 
-type LanguageKey = keyof typeof CODE_SNIPPETS;
-const languages = Object.entries(LANGUAGE_VERSIONS);
+const languages = Object.entries(LANGUAGE_DATA);
 interface CodeSectionNavbarProps {
   onFullScreenToggle: () => void;
+  setFileNameOnMain: (fileName: string) => void;
   onLanguageSelect: (language: LanguageKey) => void;
   language: LanguageKey;
   saveCodeToLocalStorage: () => void;
@@ -29,6 +18,7 @@ interface CodeSectionNavbarProps {
 
 function CodeSectionNavbar({
   onFullScreenToggle,
+  setFileNameOnMain,
   onLanguageSelect,
   language,
   saveCodeToLocalStorage,
@@ -36,16 +26,6 @@ function CodeSectionNavbar({
   const [fileName, setFileName] = useState<string>("SOURCE");
   const spanRef = useRef<HTMLSpanElement | null>(null);
   const { toast } = useToast();
-
-  // Load file name from localStorage on the client side
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedFileName = localStorage.getItem("fileName");
-      if (savedFileName) {
-        setFileName(savedFileName);
-      }
-    }
-  }, []);
 
   // Save fileName to localStorage whenever it changes
   const saveToLocalStorage = (newFileName: string) => {
@@ -68,6 +48,7 @@ function CodeSectionNavbar({
     if (spanRef.current) {
       const updatedFileName = spanRef.current.textContent || "";
       setFileName(updatedFileName);
+      setFileNameOnMain(updatedFileName);
       saveToLocalStorage(updatedFileName);
       toast({
         title: "Saved! 🎉",
@@ -79,22 +60,6 @@ function CodeSectionNavbar({
   return (
     <div className="dark:bg-[#232323] bg-[#DCDCDC] h-8 text-sm dark:text-[#BDBBB8] text-[#424447] flex items-center justify-between px-8">
       <div className="flex items-center gap-2">
-        <Select value={language} onValueChange={onLanguageSelect}>
-          <SelectTrigger className="cursor-pointer">
-            <File size={12} />
-          </SelectTrigger>
-          <SelectContent>
-            {languages.map(([lang, version]) => (
-              <SelectItem value={lang} key={lang}>
-                <div className="flex items-center gap-2">
-                  <span className="text-base">{lang}</span>
-                  <span className="text-sm">({version})</span>
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
         <div className="flex items-center">
           <Tooltip title="Click to rename" placement="top" arrow>
             <span
@@ -109,7 +74,7 @@ function CodeSectionNavbar({
             </span>
           </Tooltip>
           <kbd className="cursor-default">
-            {LANGUAGE_FILE_EXTENSIONS[language as LanguageKey]}
+            {LANGUAGE_DATA[language as LanguageKey].extension}
           </kbd>
           <IoPencil className="ml-2 text-[#BDBBB8] peer-hover:opacity-100 opacity-0 transition-opacity" />
         </div>

@@ -1,9 +1,11 @@
-import Main from "@/components/Main";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <>
-      <Main />
+      <Link href={"/Home"}>
+        <h1>GO TO /Home</h1>
+      </Link>
     </>
   );
 }

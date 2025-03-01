@@ -5,9 +5,9 @@ import { FaFolder, FaGithub, FaSave } from "react-icons/fa";
 import Link from "next/link";
 import { IoSettingsSharp } from "react-icons/io5";
 import { IconButton, Tooltip } from "@mui/material";
-import SwitchTheme from "./SwitchTheme";
-import { LanguageKey } from "./Main";
+import SwitchTheme from "./theme/SwitchTheme";
 import { getLanguageByExtension } from "@/lib/getLanguageByExtension";
+import { LanguageKey } from "@/constants";
 
 function Navbar({
   saveFileToPCStorage,
@@ -73,7 +73,7 @@ function Navbar({
         </IconButton>
         <SwitchTheme />
         <Tooltip title="View on Github" placement="bottom" arrow>
-          <Link href={"https://github.com/echoinbyte"}>
+          <Link href={"https://github.com/echoinbyte"} target="_blank">
             <IconButton
               aria-label="Visit Github"
               color="info"
