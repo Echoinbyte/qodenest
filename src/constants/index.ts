@@ -87,6 +87,6 @@ export const LANGUAGE_DATA: Record<LanguageKey, LanguageData> = {
     code_snippets: "",
     extension: "",
     version: "",
-    image: "/preview/unknown.png", // Default image for unknown languages
+    image: "/preview/c.png", // Default image for unknown languages
   },
 };

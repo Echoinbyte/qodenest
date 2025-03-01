@@ -32,7 +32,7 @@ Transform the following ${aboutCode?.language} code into fully functional and er
 5. **Output Handling**:
    - Leverage the pre-defined 'output' function for displaying all outputs in the existing 'div' tag with the 'id="output"'. This function has the following signature:
      '''javascript
-     output(content: string | HTMLElement, type: "HTMLElement" | "Inline" | "Block" | "Error" = "Block");
+     outputObj.output(content: string | HTMLElement, type: "HTMLElement" | "Inline" | "Block" | "Error" = "Block");
      '''
      - **Output Types**:
        - Use '"Block"' for general text or paragraph outputs.
@@ -44,7 +44,7 @@ Transform the following ${aboutCode?.language} code into fully functional and er
 6. **Input Handling**:
    - Replace 'prompt()' or other input methods with the pre-defined 'input' function:
      '''javascript
-     input(prompt: string): Promise<string>;
+     inputObj.input(prompt: string): Promise<string>;
      '''
      - The 'input' function is asynchronous and returns a Promise. Use '.then()' to handle the returned value appropriately.
 

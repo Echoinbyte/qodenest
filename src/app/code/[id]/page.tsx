@@ -20,13 +20,6 @@ import { LANGUAGE_DATA, LanguageKey } from "@/constants";
 import { FaSave } from "react-icons/fa";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
-import {
-  Keywords,
-  languageConfiguration,
-  languageExtensionPoint,
-  languageType,
-  setupLanguage,
-} from "@/language/customLanguageConfig";
 import executeCode from "@/lib/executeCode";
 import "@/styles/outputStyles.css";
 import { createNest, readNestById, updateNest } from "@/lib/indexedDB";
@@ -35,7 +28,7 @@ import { usePathname } from "next/navigation";
 import { registerQBasicLanguage } from "@/config/registerLanguage";
 import { registerQBasicCompletionProvider } from "@/config/qbasicCompletionProvider";
 import { registerJavaCompletionProvider } from "@/config/javaCompletionProvider";
-import * as ts from "typescript";
+import ts from "typescript";
 import { Script, createContext } from "vm";
 
 function Main() {
@@ -140,8 +133,8 @@ function Main() {
   const runTheCode = async () => {
     const sourceCode = editorRef.current.getValue();
     const context = createContext({
-      output,
-      input,
+      outputObj,
+      inputObj,
       console,
     });
     const aboutCode = {
@@ -424,83 +417,92 @@ function Main() {
 
 export default Main;
 
-export function output(
-  content: string | HTMLElement,
-  type: "HTMLElement" | "Inline" | "Block" | "Error" = "Block"
-) {
-  const outputDiv = document.getElementById("output");
-
-  if (!outputDiv) return; // Ensure the output div exists
-
-  if (type === "HTMLElement" && content instanceof HTMLElement) {
-    // Append the content directly if it's an HTML element
-    outputDiv.appendChild(content);
-    return;
-  }
-
-  let newElement: HTMLElement;
-
-  switch (type) {
-    case "Inline":
-      newElement = document.createElement("span");
-      newElement.textContent = content as string;
-      newElement.className = "output-inline-text"; // Class for styling inline text
-      break;
-
-    case "Error":
-      newElement = document.createElement("p");
-      newElement.textContent = content as string;
-      newElement.className = "error-text"; // Class for styling error text
-      break;
-
-    case "Block":
-    default:
-      newElement = document.createElement("p");
-      newElement.innerHTML = content as string;
-      newElement.className = "output-text"; // Class for styling block text
-      break;
-  }
-
-  // Append the newly created element to the outputDiv
-  outputDiv.appendChild(newElement);
+interface outputObjClass {
+  [key: string]: Function;
 }
 
-// Input function: Creates an input field with a label and returns the value via a Promise when Enter is pressed
-export function input(prompt: string) {
-  return new Promise((resolve) => {
+const outputObj: outputObjClass = {
+  output: (
+    content: string | HTMLElement,
+    type?: "HTMLElement" | "Inline" | "Block" | "Error"
+  ) => {
     const outputDiv = document.getElementById("output");
 
-    // Create a div container to hold the label and input field
-    const inputContainer = document.createElement("div");
-    inputContainer.className = "input-container"; // Added class for styling
+    if (!outputDiv) return;
 
-    // Create label for the prompt
-    const label = document.createElement("label");
-    label.textContent = prompt;
-    label.className = "input-label"; // Added className for styling
-    inputContainer.appendChild(label);
+    if (type === "HTMLElement" && content instanceof HTMLElement) {
+      outputDiv.appendChild(content);
+      return;
+    }
 
-    // Create input element
-    const inputElement = document.createElement("input");
-    inputElement.setAttribute("type", "text");
-    inputElement.className = "input-field"; // Added className for styling
-    inputContainer.appendChild(inputElement);
+    let newElement: HTMLElement;
 
-    // Append the input container to the output div
-    outputDiv?.appendChild(inputContainer);
+    switch (type) {
+      case "Inline":
+        newElement = document.createElement("span");
+        newElement.textContent = content as string;
+        newElement.className = "output-inline-text";
+        break;
 
-    // Listen for Enter key press to resolve the promise with the input value
-    inputElement.addEventListener("keypress", function (event) {
-      if (event.key === "Enter") {
-        // Resolve the Promise with the input value
-        resolve(inputElement.value);
-        inputElement.blur();
-        inputElement.setAttribute("readonly", "true");
-        inputElement.classList.add("readonly");
-      }
-    });
+      case "Error":
+        newElement = document.createElement("p");
+        newElement.textContent = content as string;
+        newElement.className = "error-text";
+        break;
 
-    // Focus on the input element for better UX
-    inputElement.focus();
-  });
+      case "Block":
+      default:
+        newElement = document.createElement("p");
+        newElement.innerHTML = content as string;
+        newElement.className = "output-text";
+        break;
+    }
+
+    outputDiv.appendChild(newElement);
+  },
+};
+
+interface inputObjClass {
+  [key: string]: Function; // This means no properties or only 'never' type values are allowed
 }
+
+const inputObj: inputObjClass = {
+  input: (prompt: string) => {
+    return new Promise<string>((resolve) => {
+      const outputDiv = document.getElementById("output");
+
+      // Create a div container to hold the label and input field
+      const inputContainer = document.createElement("div");
+      inputContainer.className = "input-container"; // Added class for styling
+
+      // Create label for the prompt
+      const label = document.createElement("label");
+      label.textContent = prompt;
+      label.className = "input-label"; // Added className for styling
+      inputContainer.appendChild(label);
+
+      // Create input element
+      const inputElement = document.createElement("input");
+      inputElement.setAttribute("type", "text");
+      inputElement.className = "input-field"; // Added className for styling
+      inputContainer.appendChild(inputElement);
+
+      // Append the input container to the output div
+      outputDiv?.appendChild(inputContainer);
+
+      // Listen for Enter key press to resolve the promise with the input value
+      inputElement.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          // Resolve the Promise with the input value
+          resolve(inputElement.value);
+          inputElement.blur();
+          inputElement.setAttribute("readonly", "true");
+          inputElement.classList.add("readonly");
+        }
+      });
+
+      // Focus on the input element for better UX
+      inputElement.focus();
+    });
+  },
+};
